@@ -13,9 +13,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class UnixConsole {
-
 	private static URI workingDirectory = getInitialWorkingDirectory();
-	private static final String LINE_SEPARATOR_WIN = "\r\n";
 	protected static final String LINE_SEPARATOR_UNIX = "\n";
 	
 	static {
@@ -34,11 +32,7 @@ public class UnixConsole {
 	protected static Function<? super String, ? extends String> sed(String regex, String replacement) {
 		return line -> line.replaceAll(regex, replacement);
 	}
-
-	protected static String appendWindowsEOL(String x) {
-		return x + LINE_SEPARATOR_WIN;
-	}
-
+	
 	private static URI getInitialWorkingDirectory() {
 		try {
 			return new URI("file://" + System.getProperty("user.dir").replaceAll("\\" + System.getProperty("file.separator"), "/"));

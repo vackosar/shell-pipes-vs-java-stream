@@ -5,20 +5,21 @@ main () {
 	read no;
 	{
 		cat "src/main/template/startHead.sql"
-		cat "in/ids$no.txt" | win2unix |
-			while read ID; do
+		cat "in/ids$no.txt" |
+			removeWindowsEOL |
+			while read id; do
 				cat "src/main/template/startBody.sql" |
-					sed "s/\$ID/$ID/g";
+					sed "s/\$ID/$id/g";
 			done
 		cat "src/main/template/startTail.sql"
 	} |
-	  unix2win \
+	appendWindowsEOL \
 	  >"out/start$no.sql";
 }
-unix2win () {
+appendWindowsEOL () {
 	sed '/\r$/q;s/$/\r/';
 }
-win2unix () {
+removeWindowsEOL () {
 	sed 's/\r$//';
 }
 set -x -e;

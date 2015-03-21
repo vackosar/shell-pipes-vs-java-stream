@@ -17,7 +17,8 @@ main () {
 	  >"out/start$no.sql";
 }
 appendWindowsEOL () {
-	sed '/\r$/q;s/$/\r/';
+	removeWindowsEOL |
+	sed 's/$/\r/';
 }
 removeWindowsEOL () {
 	sed 's/\r$//';

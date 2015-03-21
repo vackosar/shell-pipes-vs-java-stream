@@ -1,4 +1,4 @@
-package com.vackosar.shellvsjavastream;
+package com.vackosar.shellpipesvsjavastream;
 
 import java.io.IOException;
 

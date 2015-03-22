@@ -4,14 +4,14 @@ main () {
 	echo "Start number?";
 	read no;
 	{
-		cat "src/main/template/startHead.sql"
+		cat "src/main/template/startHead.sql";
 		cat "in/ids$no.txt" |
 			removeWindowsEOL |
 			while read id; do
 				cat "src/main/template/startBody.sql" |
 					sed "s/\$ID/$id/g";
 			done
-		cat "src/main/template/startTail.sql"
+		cat "src/main/template/startTail.sql";
 	} |
 	appendWindowsEOL \
 	  >"out/start$no.sql";

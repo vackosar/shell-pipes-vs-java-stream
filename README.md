@@ -1,4 +1,4 @@
-# shell-pipes-vs-java-stream
+# Shell Pipes vs Java Streams
 Demonstration of scripting power of Java compared to Shell.
 
 Check out the how similar Bash Pipes and Java Streams can now get at:

@@ -2,8 +2,9 @@ package com.vackosar.shellpipesvsjavastream;
 
 import java.io.IOException;
 import java.util.function.Function;
+import static com.vackosar.shellpipesvsjavastream.UnixConsole.*;
 
-public class MakeStart extends UnixConsole {
+public class MakeStart {
 	public static void main(String[] args) throws IOException {
 		cd(getClassFileDir().resolve("../"));
 		echo("Start number?");

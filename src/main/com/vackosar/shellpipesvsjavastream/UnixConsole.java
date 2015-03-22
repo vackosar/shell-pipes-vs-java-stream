@@ -25,7 +25,11 @@ public class UnixConsole {
 		System.setProperty("line.separator", LINE_SEPARATOR_UNIX);
 	}
 
-	protected static URI getClassFileDir() {
+	public UnixConsole() {
+		super();
+	}
+	
+	public static URI getClassFileDir() {
 		try {
 			return MakeStart.class.getProtectionDomain().getCodeSource().getLocation().toURI();
 		} catch (URISyntaxException e) {
@@ -33,11 +37,11 @@ public class UnixConsole {
 		}
 	}
 
-	protected static Function<? super String, ? extends String> sed(String regex, String replacement) {
+	public static Function<? super String, ? extends String> sed(String regex, String replacement) {
 		return line -> line.replaceAll(regex, replacement);
 	}
 	
-	private static URI getInitialWorkingDirectory() {
+	public static URI getInitialWorkingDirectory() {
 		try {
 			return new URI("file://" + System.getProperty("user.dir").replaceAll("\\" + System.getProperty("file.separator"), "/"));
 		} catch (URISyntaxException e) {
@@ -45,15 +49,15 @@ public class UnixConsole {
 		}
 	}
 
-	protected static void cd(URI uri) {
+	public static void cd(URI uri) {
 		workingDirectory = uri;
 	}
 
-	private static URI pwd() {
+	public static URI pwd() {
 		return workingDirectory;
 	}
 
-	protected static class FileWriterCollector implements Collector<String, FileWriter, Void> {
+	private static class FileWriterCollector implements Collector<String, FileWriter, Void> {
 			final String relativePath;
 			public FileWriterCollector(String relativePath) {
 				this.relativePath = relativePath;
@@ -111,7 +115,7 @@ public class UnixConsole {
 			}
 		}
 
-	protected static Stream<String> cat(String relativePath) {
+	public static Stream<String> cat(String relativePath) {
 		try {
 			return Files.lines(Paths.get(pwd().resolve(relativePath)));
 		} catch (IOException e) {
@@ -120,24 +124,19 @@ public class UnixConsole {
 	}
 
 	@SafeVarargs
-	protected static <T> Stream<T> concat(Stream<T> ... streams) {
+	public static <T> Stream<T> concat(Stream<T> ... streams) {
 		return Stream.of(streams).reduce(Stream.empty(), Stream::concat);
 	}
 
-	protected static String readLine() {
+	public static String readLine() {
 		return System.console().readLine();
 	}
 	
-	protected static Collector<String, ?, Void> write (String relativePath) {
+	public static Collector<String, ?, Void> write (String relativePath) {
 		return new FileWriterCollector(relativePath);
 	}
 
-	protected static void echo(String line) {
+	public static void echo(String line) {
 		System.console().printf(line + System.lineSeparator());
 	}
-
-	public UnixConsole() {
-		super();
-	}
-
 }

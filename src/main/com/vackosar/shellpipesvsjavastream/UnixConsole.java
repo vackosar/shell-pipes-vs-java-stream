@@ -1,6 +1,5 @@
 package com.vackosar.shellpipesvsjavastream;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,8 +7,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.function.Consumer;
+import java.util.Collections;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 public class UnixConsole {
@@ -49,34 +53,62 @@ public class UnixConsole {
 		return workingDirectory;
 	}
 
-	protected static class FileWriterConsumer implements Consumer<String>, Closeable {
-			FileWriter writer;
-			public FileWriterConsumer(String relativePath) {
-				File file = new File(pwd().resolve(relativePath));
-				try {
-					writer = new FileWriter(file);
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
+	protected static class FileWriterCollector implements Collector<String, FileWriter, Void> {
+			final String relativePath;
+			public FileWriterCollector(String relativePath) {
+				this.relativePath = relativePath;
 			}
-			
-			public void accept(String line) {
-				try {
-					writer.write(line);
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			}
-	
+
 			@Override
-			public void close() throws IOException {
-				try {
-					writer.close();
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
+			public BiConsumer<FileWriter, String> accumulator() {
+				return new BiConsumer<FileWriter, String>() {
+					@Override
+					public void accept(FileWriter writer, String line) {
+						try {
+							writer.write(line);
+						} catch (IOException e) {
+							throw new RuntimeException(e);
+						}
+					}
+				};
 			}
-			
+
+			@Override
+			public Set<java.util.stream.Collector.Characteristics> characteristics() {
+				return Collections.emptySet();
+			}
+
+			@Override
+			public BinaryOperator<FileWriter> combiner() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public Function<FileWriter, Void> finisher() {
+				return writer -> { 
+					try {
+						writer.close();
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					} return null; 
+				} ;
+			}
+
+			@Override
+			public Supplier<FileWriter> supplier() {
+				return new Supplier<FileWriter>() {
+					@Override
+					public FileWriter get() {
+						File file = new File(pwd().resolve(relativePath));
+						try {
+							return new FileWriter(file);
+						} catch (IOException e) {
+							throw new RuntimeException(e);
+						}
+					}
+				};
+			}
 		}
 
 	protected static Stream<String> cat(String relativePath) {

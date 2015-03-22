@@ -7,7 +7,7 @@ public class MakeStart extends UnixConsole {
 	public static void main(String[] args) throws IOException {
 		cd(getClassFileDir().resolve("../"));
 		echo("Start number?");
-		String no = read();
+		String no = readLine();
 		concat(
 			cat("src/main/template/startHead.sql"),
 			cat("in/ids" + no + ".txt")
@@ -19,7 +19,7 @@ public class MakeStart extends UnixConsole {
 			cat("src/main/template/startTail.sql")
 		)
 			.map(appendWindowsEOL())
-			.collect(new FileWriterCollector("out/start" + no + ".sql"));
+			.collect(write("out/start" + no + ".sql"));
 	}
 
 	private static final String LINE_SEPARATOR_WIN_IN_UNIX = "\r";

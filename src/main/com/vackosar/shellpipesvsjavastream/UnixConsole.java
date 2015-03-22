@@ -124,8 +124,12 @@ public class UnixConsole {
 		return Stream.of(streams).reduce(Stream.empty(), Stream::concat);
 	}
 
-	protected static String read() {
+	protected static String readLine() {
 		return System.console().readLine();
+	}
+	
+	protected static Collector<String, ?, Void> write (String relativePath) {
+		return new FileWriterCollector(relativePath);
 	}
 
 	protected static void echo(String line) {
